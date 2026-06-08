@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Issued Books | Library Management System{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h1>Issued Books Records</h1>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Book Title</th>
+                    <th>Issue Date</th>
+                    <th>Return Date</th>
+                    <th>Status</th>
+                    <th>Fine Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td data-label="User ID">{{ record.user_id }}</td>
+                    <td data-label="Book Title" class="title-cell">{{ record.book.title }}</td>
+                    <td data-label="Issue Date">{{ record.issue_date }}</td>
+                    <td data-label="Return Date">{{ record.return_date }}</td>
+                    <td data-label="Status">{% if record.returned %}Returned{% else %}Issued{% endif %}</td>
+                    <td data-label="Fine Amount">₹{{ record.fine_amount }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="muted">No issued records yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

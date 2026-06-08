@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Issue Book | Library Management System{% endblock %}
+
+{% block content %}
+<section class="card">
+    <div class="page-head">
+        <h1>Issue Book</h1>
+        <input id="issueBookSearch" class="input" type="text" placeholder="Search available books">
+    </div>
+    <div class="table-wrap">
+        <table id="issueBooksTable">
+            <thead>
+                <tr>
+                    <th>ISBN</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Available Copies</th>
+                    <th>Select</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr data-search="{{ book.isbn|lower }} {{ book.title|lower }} {{ book.author|lower }} {{ book.genre|lower }}">
+                    <td>{{ book.isbn }}</td>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.genre }}</td>
+                    <td>{{ book.available_copies }}</td>
+                    <td><a class="btn btn-secondary" href="?book_id={{ book.id }}">Select</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="muted">No books available for issue.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <p id="issueNoResults" class="muted hidden">No matching books found.</p>
+</section>
+
+<section class="card form-card">
+    <h2>Issue Details</h2>
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        <input type="hidden" name="book_id" value="{% if selected_book %}{{ selected_book.id }}{% endif %}">
+        <label>Selected Book
+            <input class="input" type="text" value="{% if selected_book %}{{ selected_book.title }} ({{ selected_book.isbn }}){% else %}None selected{% endif %}" readonly>
+        </label>
+        <label>User ID
+            <input class="input" type="text" name="user_id" required>
+        </label>
+        <label>Issue Duration (Days)
+            <input class="input" type="number" name="duration_days" min="1" required>
+        </label>
+        <button type="submit" class="btn btn-primary">Issue Book</button>
+    </form>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/books.js' %}"></script>
+{% endblock %}

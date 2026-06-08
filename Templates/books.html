@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Books | Library Management System{% endblock %}
+
+{% block content %}
+<section class="card">
+    <div class="page-head">
+        <h1>Books</h1>
+        <input id="bookSearch" class="input" type="text" placeholder="Search by ISBN, title, author, or genre">
+    </div>
+    <div class="table-wrap">
+        <table id="booksTable">
+            <thead>
+                <tr>
+                    <th>ISBN</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Available Copies</th>
+                    {% if is_admin %}<th>Actions</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr data-search="{{ book.isbn|lower }} {{ book.title|lower }} {{ book.author|lower }} {{ book.genre|lower }}">
+                    <td data-label="ISBN">{{ book.isbn }}</td>
+                    <td data-label="Title" class="title-cell">{{ book.title }}</td>
+                    <td data-label="Author">{{ book.author }}</td>
+                    <td data-label="Genre">{{ book.genre }}</td>
+                    <td data-label="Available Copies">{{ book.available_copies }} / {{ book.total_copies }}</td>
+                    {% if is_admin %}
+                    <td data-label="Actions" class="actions">
+                        {% if book.available_copies > 0 %}
+                            <a class="btn btn-primary" href="{% url 'issue_book' %}?book_id={{ book.id }}">Issue</a>
+                        {% else %}
+                            <span class="pill">Out of stock</span>
+                        {% endif %}
+                        <form method="post" action="{% url 'delete_book' book.id %}" onsubmit="return confirm('Delete this book?');">
+                            {% csrf_token %}
+                            <button class="btn btn-danger" type="submit">Delete</button>
+                        </form>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="{% if is_admin %}6{% else %}5{% endif %}" class="muted">No books available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <p id="noResults" class="muted hidden">No matching books found.</p>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/books.js' %}"></script>
+{% endblock %}

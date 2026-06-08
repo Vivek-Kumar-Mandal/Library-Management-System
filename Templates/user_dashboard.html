@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}My Dashboard | Library Management System{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h1>Welcome, {{ user.name|default:user.user_id }}!</h1>
+    
+    <div class="dashboard-sections">
+        <!-- Currently Issued Books -->
+        <section class="dashboard-card">
+            <h2>📚 Currently Issued Books</h2>
+            {% if issued_records %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Book Title</th>
+                                <th>Author</th>
+                                <th>Issue Date</th>
+                                <th>Return Date</th>
+                                <th>Days Left</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in issued_records %}
+                                <tr class="{% if record.return_date|date:'Y-m-d' < today %}overdue{% endif %}">
+                                    <td><strong>{{ record.book.title }}</strong></td>
+                                    <td>{{ record.book.author }}</td>
+                                    <td>{{ record.issue_date|date:'d M, Y' }}</td>
+                                    <td>
+                                        <span class="date {% if record.return_date|date:'Y-m-d' < today %}text-danger{% endif %}">
+                                            {{ record.return_date|date:'d M, Y' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% with days_left=record.return_date|date:'Y-m-d'|add:' days' %}
+                                            <span class="badge {% if record.return_date|date:'Y-m-d' < today %}badge-danger{% else %}badge-success{% endif %}">
+                                                {% if record.return_date|date:'Y-m-d' < today %}
+                                                    Overdue
+                                                {% else %}
+                                                    {{ record.return_date|timeuntil }}
+                                                {% endif %}
+                                            </span>
+                                        {% endwith %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="empty-state">No books currently issued to you.</p>
+            {% endif %}
+        </section>
+
+        <!-- Returned Books -->
+        <section class="dashboard-card">
+            <h2>✅ Returned Books</h2>
+            {% if returned_records %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Book Title</th>
+                                <th>Author</th>
+                                <th>Issue Date</th>
+                                <th>Return Date</th>
+                                <th>Fine Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in returned_records %}
+                                <tr>
+                                    <td><strong>{{ record.book.title }}</strong></td>
+                                    <td>{{ record.book.author }}</td>
+                                    <td>{{ record.issue_date|date:'d M, Y' }}</td>
+                                    <td>{{ record.return_date|date:'d M, Y' }}</td>
+                                    <td>
+                                        {% if record.fine_amount > 0 %}
+                                            <span class="text-danger">₹{{ record.fine_amount }}</span>
+                                        {% else %}
+                                            <span class="text-success">No fine</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="empty-state">No returned books.</p>
+            {% endif %}
+        </section>
+    </div>
+</div>
+{% endblock %}

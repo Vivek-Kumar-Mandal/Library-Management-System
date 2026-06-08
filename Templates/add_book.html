@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Add Book | Library Management System{% endblock %}
+
+{% block content %}
+<section class="card form-card">
+    <h1>Add Book</h1>
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        <label>Title
+            <input class="input" type="text" name="title" maxlength="200" required>
+        </label>
+        <label>Author
+            <input class="input" type="text" name="author" maxlength="150" required>
+        </label>
+        <label>Genre
+            <input class="input" type="text" name="genre" maxlength="80" required>
+        </label>
+        <label>ISBN
+            <input class="input" type="text" name="isbn" placeholder="LIB051" pattern="LIB[0-9]{3,}" title="Use format like LIB001" required>
+        </label>
+        <label>Total Copies
+            <input class="input" type="number" name="total_copies" min="1" required>
+        </label>
+        <button type="submit" class="btn btn-primary">Add Book</button>
+    </form>
+</section>
+{% endblock %}

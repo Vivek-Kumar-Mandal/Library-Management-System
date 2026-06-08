@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login | Library Management System{% endblock %}
+
+{% block content %}
+<section class="card form-card narrow">
+    <h1>Admin Login</h1>
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        <label>Username
+            <input class="input" type="text" name="username" required>
+        </label>
+        <label>Password
+            <input class="input" type="password" name="password" required>
+        </label>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+    <p class="text-center mt-3">
+        <a href="{% url 'index' %}">Back to Home</a>
+    </p>
+</section>
+{% endblock %}

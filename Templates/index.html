@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Library Management System - Login{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h1>Library Management System</h1>
+    <p class="welcome-text">Welcome to the Library Management System</p>
+    
+    <div class="login-sections">
+        <!-- User Login Section -->
+        <section class="login-card user-section">
+            <div class="section-header">
+                <h2>User Login</h2>
+                <p class="section-subtitle">Access your library account</p>
+            </div>
+            <form method="post" action="{% url 'user_login' %}" class="login-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="user_id">User ID</label>
+                    <input type="text" id="user_id" name="user_id" class="input" placeholder="e.g., 3151415" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="input" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">User Login</button>
+            </form>
+            <p class="section-info">
+                <i class="icon">👤</i> View and manage your issued books
+            </p>
+        </section>
+
+        <!-- Admin Login Section -->
+        <section class="login-card admin-section">
+            <div class="section-header">
+                <h2>Admin Login</h2>
+                <p class="section-subtitle">Library administration access</p>
+            </div>
+            <form method="post" action="{% url 'admin_login' %}" class="login-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" class="input" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <label for="admin_password">Password</label>
+                    <input type="password" id="admin_password" name="password" class="input" required>
+                </div>
+                <button type="submit" class="btn btn-success btn-block">Admin Login</button>
+            </form>
+            <p class="section-info">
+                <i class="icon">🔐</i> Full access to library management features
+            </p>
+        </section>
+    </div>
+</div>
+{% endblock %}
